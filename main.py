@@ -24,6 +24,7 @@ screen.tracer(0)
 
 starting_pos=0
 
+
 screen.listen()
 screen.onkey(snake.up,"Up")
 screen.onkey(snake.down,"Down")
@@ -31,6 +32,7 @@ screen.onkey(snake.left,"Left")
 screen.onkey(snake.right,"Right")
 
 counter_big_food=0
+big_food = None
 
 game_is_on = True
 while game_is_on:
@@ -46,17 +48,20 @@ while game_is_on:
         snake.extend()
         score.update()
 
-    big_food=None
+    if counter_big_food == 5:
+        if big_food is None:  # Create only if it does not already exist
+            big_food = BigFood()
 
-    # if counter_big_food == 5:
-    #     big_food = BigFood()
-    #     if snake.head.distance(big_food) < 25:
-    #         counter_big_food=0
-    #         for i in range(1,3):
-    #             snake.extend()
-    #         score.update(True)
-    #         big_food.hideturtle()
-    #         big_food = None
+        # Check collision with BigFood
+        if snake.head.distance(big_food) < 25:
+            counter_big_food = 0  # Reset counter
+            for _ in range(2):  # Increase snake size twice
+                snake.extend()
+            score.update(True)
+
+            big_food.hideturtle()  # Hide big food
+            big_food = None  # Remove reference to it
+
     #Detect Collision With Wall
     if snake.head.xcor() > 290 or snake.head.xcor() < -290 or snake.head.ycor() > 280 or snake.head.ycor() < -290:
         game_is_on=False
